@@ -83,6 +83,46 @@ function formatTripDate(dateString) {
   }).format(parseDate(dateString));
 }
 
+function escapeCsvCell(value) {
+  const text = String(value ?? "");
+  const safeText = /^[=+\-@]/.test(text) ? `'${text}` : text;
+  return `"${safeText.replaceAll('"', '""')}"`;
+}
+
+function tripsToCsv(items) {
+  const headers = [
+    "Destination",
+    "Country",
+    "Start date",
+    "End date",
+    "Travel mode",
+    "Status",
+    "Budget SGD",
+    "Booked SGD",
+  ];
+  const rows = items.map((trip) => [
+    trip.destination,
+    trip.country,
+    trip.startDate,
+    trip.endDate,
+    trip.travelMode,
+    trip.status,
+    trip.budget,
+    trip.booked,
+  ]);
+
+  return [headers, ...rows].map((row) => row.map(escapeCsvCell).join(",")).join("\r\n");
+}
+
+function downloadTripsCsv(items = trips) {
+  const url = URL.createObjectURL(new Blob([tripsToCsv(items)], { type: "text/csv;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "trip-tally-itinerary.csv";
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 function tripCardMarkup(trip) {
   const start = parseDate(trip.startDate);
   const month = new Intl.DateTimeFormat("en-SG", { month: "short", timeZone: "UTC" }).format(start);
@@ -125,16 +165,19 @@ function renderDashboard(items = trips) {
 }
 
 if (typeof document !== "undefined") {
+  document.querySelector("#export-trips").addEventListener("click", () => downloadTripsCsv());
   renderDashboard();
 }
 
 if (typeof module !== "undefined") {
   module.exports = {
+    escapeCsvCell,
     formatCurrency,
     formatTripDate,
     getTripDuration,
     summarizeTrips,
     tripCardMarkup,
+    tripsToCsv,
     trips,
   };
 }

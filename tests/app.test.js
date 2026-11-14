@@ -2,10 +2,12 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
+  escapeCsvCell,
   formatCurrency,
   getTripDuration,
   summarizeTrips,
   tripCardMarkup,
+  tripsToCsv,
   trips,
 } = require("../app.js");
 
@@ -42,4 +44,17 @@ test("trip card exposes destination, status, and duration", () => {
   assert.match(markup, /George Town/);
   assert.match(markup, /Booked/);
   assert.match(markup, /3 nights/);
+});
+
+test("CSV export includes a header and one row per trip", () => {
+  const lines = tripsToCsv(trips).split("\r\n");
+  assert.equal(lines.length, trips.length + 1);
+  assert.equal(lines[0], '"Destination","Country","Start date","End date","Travel mode","Status","Budget SGD","Booked SGD"');
+  assert.match(lines[1], /"George Town","Malaysia"/);
+});
+
+test("CSV cells escape quotes and neutralize spreadsheet formulas", () => {
+  assert.equal(escapeCsvCell('Seoul, "South"'), '"Seoul, ""South"""');
+  assert.equal(escapeCsvCell("=2+3"), '"\'=2+3"');
+  assert.equal(escapeCsvCell("-10+20"), '"\'-10+20"');
 });
