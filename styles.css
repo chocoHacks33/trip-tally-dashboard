@@ -142,6 +142,16 @@ h1 {
   white-space: nowrap;
 }
 
+.hero-stamp small {
+  display: block;
+  margin-top: 0.2rem;
+  color: var(--coral);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -302,6 +312,14 @@ h1 {
   font-weight: 800;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.departure-countdown {
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--coral);
+  font-size: 0.74rem;
+  font-weight: 800;
 }
 
 footer {

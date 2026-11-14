@@ -54,6 +54,21 @@ function getTripDuration(startDate, endDate) {
   return Math.max(0, Math.round((parseDate(endDate) - parseDate(startDate)) / millisecondsPerDay));
 }
 
+function daysUntilDeparture(startDate, today = new Date()) {
+  const todayUtc = Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate());
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  return Math.round((parseDate(startDate).getTime() - todayUtc) / millisecondsPerDay);
+}
+
+function formatDepartureCountdown(startDate, today = new Date()) {
+  const days = daysUntilDeparture(startDate, today);
+
+  if (days < 0) return "Departed";
+  if (days === 0) return "Departs today";
+  if (days === 1) return "Departs tomorrow";
+  return `${days} days to go`;
+}
+
 function summarizeTrips(items) {
   return items.reduce(
     (summary, trip) => ({
@@ -83,7 +98,7 @@ function formatTripDate(dateString) {
   }).format(parseDate(dateString));
 }
 
-function tripCardMarkup(trip) {
+function tripCardMarkup(trip, today = new Date()) {
   const start = parseDate(trip.startDate);
   const month = new Intl.DateTimeFormat("en-SG", { month: "short", timeZone: "UTC" }).format(start);
   const day = new Intl.DateTimeFormat("en-SG", { day: "2-digit", timeZone: "UTC" }).format(start);
@@ -102,6 +117,7 @@ function tripCardMarkup(trip) {
           <span>${nights} ${nights === 1 ? "night" : "nights"}</span>
           <span>${trip.travelMode}</span>
         </div>
+        <span class="departure-countdown">${formatDepartureCountdown(trip.startDate, today)}</span>
         <span class="status">${trip.status}</span>
         <div class="trip-costs">
           <span>Budget ${formatCurrency(trip.budget)}</span>
@@ -120,6 +136,9 @@ function renderDashboard(items = trips) {
   document.querySelector("#budget-total").textContent = formatCurrency(summary.budget);
   document.querySelector("#booked-total").textContent = formatCurrency(summary.booked);
   document.querySelector("#next-stop").textContent = orderedTrips[0]?.destination ?? "No trips";
+  document.querySelector("#next-departure").textContent = orderedTrips[0]
+    ? formatDepartureCountdown(orderedTrips[0].startDate)
+    : "Add a trip";
   document.querySelector("#trip-summary").textContent = `${summary.tripCount} upcoming ${summary.tripCount === 1 ? "trip" : "trips"}`;
   document.querySelector("#trip-list").innerHTML = orderedTrips.map(tripCardMarkup).join("");
 }
@@ -130,6 +149,8 @@ if (typeof document !== "undefined") {
 
 if (typeof module !== "undefined") {
   module.exports = {
+    daysUntilDeparture,
+    formatDepartureCountdown,
     formatCurrency,
     formatTripDate,
     getTripDuration,
