@@ -2,6 +2,8 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
+  daysUntilDeparture,
+  formatDepartureCountdown,
   formatCurrency,
   getTripDuration,
   summarizeTrips,
@@ -42,4 +44,17 @@ test("trip card exposes destination, status, and duration", () => {
   assert.match(markup, /George Town/);
   assert.match(markup, /Booked/);
   assert.match(markup, /3 nights/);
+});
+
+test("departure countdown uses UTC calendar boundaries", () => {
+  const today = new Date("2026-11-14T23:45:00Z");
+  assert.equal(daysUntilDeparture("2026-11-28", today), 14);
+  assert.equal(formatDepartureCountdown("2026-11-28", today), "14 days to go");
+});
+
+test("departure countdown describes today, tomorrow, and past trips", () => {
+  const today = new Date("2026-11-14T08:00:00Z");
+  assert.equal(formatDepartureCountdown("2026-11-14", today), "Departs today");
+  assert.equal(formatDepartureCountdown("2026-11-15", today), "Departs tomorrow");
+  assert.equal(formatDepartureCountdown("2026-11-13", today), "Departed");
 });
