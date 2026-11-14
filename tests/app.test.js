@@ -3,6 +3,8 @@ const assert = require("node:assert/strict");
 
 const {
   formatCurrency,
+  filterTripsByCountry,
+  getCountries,
   getTripDuration,
   summarizeTrips,
   tripCardMarkup,
@@ -42,4 +44,13 @@ test("trip card exposes destination, status, and duration", () => {
   assert.match(markup, /George Town/);
   assert.match(markup, /Booked/);
   assert.match(markup, /3 nights/);
+});
+
+test("countries are unique and alphabetized for the destination filter", () => {
+  assert.deepEqual(getCountries(trips), ["Australia", "Indonesia", "Japan", "Malaysia"]);
+});
+
+test("destination filter keeps matching trips and supports the all option", () => {
+  assert.deepEqual(filterTripsByCountry(trips, "Japan").map((trip) => trip.destination), ["Kyoto"]);
+  assert.equal(filterTripsByCountry(trips, "all"), trips);
 });

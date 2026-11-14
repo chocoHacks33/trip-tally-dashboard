@@ -66,6 +66,14 @@ function summarizeTrips(items) {
   );
 }
 
+function getCountries(items) {
+  return [...new Set(items.map((trip) => trip.country))].sort((a, b) => a.localeCompare(b));
+}
+
+function filterTripsByCountry(items, country) {
+  return country === "all" ? items : items.filter((trip) => trip.country === country);
+}
+
 function formatCurrency(value) {
   return new Intl.NumberFormat("en-SG", {
     style: "currency",
@@ -124,7 +132,20 @@ function renderDashboard(items = trips) {
   document.querySelector("#trip-list").innerHTML = orderedTrips.map(tripCardMarkup).join("");
 }
 
+function setupCountryFilter(items = trips) {
+  const filter = document.querySelector("#country-filter");
+  const options = getCountries(items)
+    .map((country) => `<option value="${country}">${country}</option>`)
+    .join("");
+
+  filter.insertAdjacentHTML("beforeend", options);
+  filter.addEventListener("change", () => {
+    renderDashboard(filterTripsByCountry(items, filter.value));
+  });
+}
+
 if (typeof document !== "undefined") {
+  setupCountryFilter();
   renderDashboard();
 }
 
@@ -132,6 +153,8 @@ if (typeof module !== "undefined") {
   module.exports = {
     formatCurrency,
     formatTripDate,
+    filterTripsByCountry,
+    getCountries,
     getTripDuration,
     summarizeTrips,
     tripCardMarkup,
