@@ -2,6 +2,7 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
+  calculateBudgetProgress,
   formatCurrency,
   getTripDuration,
   summarizeTrips,
@@ -42,4 +43,21 @@ test("trip card exposes destination, status, and duration", () => {
   assert.match(markup, /George Town/);
   assert.match(markup, /Booked/);
   assert.match(markup, /3 nights/);
+});
+
+test("budget progress reports booked percentage and remaining spend", () => {
+  assert.deepEqual(calculateBudgetProgress(trips), {
+    percentage: 19,
+    remaining: 6230,
+  });
+});
+
+test("budget progress handles empty and overbooked plans", () => {
+  assert.deepEqual(calculateBudgetProgress([]), { percentage: 0, remaining: 0 });
+  assert.deepEqual(
+    calculateBudgetProgress([
+      { startDate: "2027-01-01", endDate: "2027-01-02", budget: 100, booked: 125 },
+    ]),
+    { percentage: 100, remaining: 0 },
+  );
 });

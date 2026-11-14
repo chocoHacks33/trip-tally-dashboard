@@ -66,6 +66,16 @@ function summarizeTrips(items) {
   );
 }
 
+function calculateBudgetProgress(items) {
+  const { budget, booked } = summarizeTrips(items);
+  const percentage = budget === 0 ? 0 : Math.min(100, Math.round((booked / budget) * 100));
+
+  return {
+    percentage,
+    remaining: Math.max(0, budget - booked),
+  };
+}
+
 function formatCurrency(value) {
   return new Intl.NumberFormat("en-SG", {
     style: "currency",
@@ -113,12 +123,16 @@ function tripCardMarkup(trip) {
 
 function renderDashboard(items = trips) {
   const summary = summarizeTrips(items);
+  const budgetProgress = calculateBudgetProgress(items);
   const orderedTrips = [...items].sort((a, b) => a.startDate.localeCompare(b.startDate));
 
   document.querySelector("#trip-count").textContent = summary.tripCount;
   document.querySelector("#night-count").textContent = summary.nights;
   document.querySelector("#budget-total").textContent = formatCurrency(summary.budget);
   document.querySelector("#booked-total").textContent = formatCurrency(summary.booked);
+  document.querySelector("#booked-progress").value = budgetProgress.percentage;
+  document.querySelector("#booked-progress").textContent = `${budgetProgress.percentage}%`;
+  document.querySelector("#budget-remaining").textContent = `${formatCurrency(budgetProgress.remaining)} remaining`;
   document.querySelector("#next-stop").textContent = orderedTrips[0]?.destination ?? "No trips";
   document.querySelector("#trip-summary").textContent = `${summary.tripCount} upcoming ${summary.tripCount === 1 ? "trip" : "trips"}`;
   document.querySelector("#trip-list").innerHTML = orderedTrips.map(tripCardMarkup).join("");
@@ -130,6 +144,7 @@ if (typeof document !== "undefined") {
 
 if (typeof module !== "undefined") {
   module.exports = {
+    calculateBudgetProgress,
     formatCurrency,
     formatTripDate,
     getTripDuration,
