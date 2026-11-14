@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A compact dashboard for upcoming trips, budgets, and itinerary highlights.">
+    <title>Trip Tally</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#main-content" aria-label="Trip Tally home">
+        <span class="brand-mark" aria-hidden="true">TT</span>
+        <span>Trip Tally</span>
+      </a>
+      <p>Upcoming travel, without the spreadsheet sprawl.</p>
+    </header>
+
+    <main id="main-content" class="dashboard">
+      <section class="hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Travel planning dashboard</p>
+          <h1 id="page-title">See the whole journey at a glance.</h1>
+          <p class="hero-copy">Keep dates, budgets, transport, and the next memorable stops together.</p>
+        </div>
+        <div class="hero-stamp" aria-hidden="true">
+          <span>Next stop</span>
+          <strong id="next-stop">—</strong>
+        </div>
+      </section>
+
+      <section class="summary-grid" aria-label="Travel summary">
+        <article class="summary-card accent-coral">
+          <span>Upcoming trips</span>
+          <strong id="trip-count">0</strong>
+          <small>on the itinerary</small>
+        </article>
+        <article class="summary-card accent-blue">
+          <span>Planned nights</span>
+          <strong id="night-count">0</strong>
+          <small>away from home</small>
+        </article>
+        <article class="summary-card accent-gold">
+          <span>Total budget</span>
+          <strong id="budget-total">$0</strong>
+          <small>across all trips</small>
+        </article>
+        <article class="summary-card accent-green">
+          <span>Already booked</span>
+          <strong id="booked-total">$0</strong>
+          <small>reserved so far</small>
+        </article>
+      </section>
+
+      <section class="itinerary-section" aria-labelledby="itinerary-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Itinerary board</p>
+            <h2 id="itinerary-title">Trips in motion</h2>
+          </div>
+          <p id="trip-summary" aria-live="polite"></p>
+        </div>
+        <div id="trip-list" class="trip-grid"></div>
+      </section>
+    </main>
+
+    <footer>Made for lightweight planning. All data stays in this page.</footer>
+    <script src="app.js"></script>
+  </body>
+</html>
+
