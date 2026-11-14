@@ -224,6 +224,35 @@ h1 {
   font-size: 0.86rem;
 }
 
+.trip-controls {
+  display: grid;
+  grid-template-columns: auto minmax(10rem, auto);
+  gap: 0.4rem 0.7rem;
+  align-items: center;
+  justify-content: end;
+}
+
+.trip-controls label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.trip-controls select {
+  min-height: 2.5rem;
+  padding: 0.4rem 2rem 0.4rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  color: var(--navy);
+  background: var(--panel);
+  font: inherit;
+}
+
+.trip-controls #trip-summary {
+  grid-column: 1 / -1;
+  text-align: right;
+}
+
 .trip-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -347,6 +376,16 @@ footer {
 
   .section-heading {
     display: block;
+  }
+
+  .trip-controls {
+    grid-template-columns: auto 1fr;
+    justify-content: stretch;
+    margin-top: 1rem;
+  }
+
+  .trip-controls #trip-summary {
+    text-align: left;
   }
 
   #trip-summary {
