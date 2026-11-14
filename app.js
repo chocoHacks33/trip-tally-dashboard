@@ -66,6 +66,21 @@ function summarizeTrips(items) {
   );
 }
 
+function summarizeTravelModes(items) {
+  const counts = items.reduce((totals, trip) => {
+    totals.set(trip.travelMode, (totals.get(trip.travelMode) ?? 0) + 1);
+    return totals;
+  }, new Map());
+
+  return [...counts.entries()]
+    .map(([mode, count]) => ({
+      mode,
+      count,
+      percentage: Math.round((count / items.length) * 100),
+    }))
+    .sort((a, b) => b.count - a.count || a.mode.localeCompare(b.mode));
+}
+
 function formatCurrency(value) {
   return new Intl.NumberFormat("en-SG", {
     style: "currency",
@@ -111,6 +126,17 @@ function tripCardMarkup(trip) {
     </article>`;
 }
 
+function travelModeMarkup(items) {
+  return summarizeTravelModes(items)
+    .map(({ mode, count, percentage }) => `
+      <div class="mode-row" role="listitem" aria-label="${mode}: ${count} ${count === 1 ? "trip" : "trips"}, ${percentage}%">
+        <span>${mode}</span>
+        <span class="mode-track" aria-hidden="true"><span class="mode-bar" style="width: ${percentage}%"></span></span>
+        <strong>${percentage}%</strong>
+      </div>`)
+    .join("");
+}
+
 function renderDashboard(items = trips) {
   const summary = summarizeTrips(items);
   const orderedTrips = [...items].sort((a, b) => a.startDate.localeCompare(b.startDate));
@@ -121,6 +147,7 @@ function renderDashboard(items = trips) {
   document.querySelector("#booked-total").textContent = formatCurrency(summary.booked);
   document.querySelector("#next-stop").textContent = orderedTrips[0]?.destination ?? "No trips";
   document.querySelector("#trip-summary").textContent = `${summary.tripCount} upcoming ${summary.tripCount === 1 ? "trip" : "trips"}`;
+  document.querySelector("#mode-breakdown").innerHTML = travelModeMarkup(items);
   document.querySelector("#trip-list").innerHTML = orderedTrips.map(tripCardMarkup).join("");
 }
 
@@ -134,7 +161,9 @@ if (typeof module !== "undefined") {
     formatTripDate,
     getTripDuration,
     summarizeTrips,
+    summarizeTravelModes,
     tripCardMarkup,
+    travelModeMarkup,
     trips,
   };
 }

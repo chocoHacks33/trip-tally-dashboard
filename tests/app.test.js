@@ -5,7 +5,9 @@ const {
   formatCurrency,
   getTripDuration,
   summarizeTrips,
+  summarizeTravelModes,
   tripCardMarkup,
+  travelModeMarkup,
   trips,
 } = require("../app.js");
 
@@ -42,4 +44,19 @@ test("trip card exposes destination, status, and duration", () => {
   assert.match(markup, /George Town/);
   assert.match(markup, /Booked/);
   assert.match(markup, /3 nights/);
+});
+
+test("travel mode summary ranks modes and calculates their shares", () => {
+  assert.deepEqual(summarizeTravelModes(trips), [
+    { mode: "Flight", count: 3, percentage: 75 },
+    { mode: "Bus", count: 1, percentage: 25 },
+  ]);
+  assert.deepEqual(summarizeTravelModes([]), []);
+});
+
+test("travel mode insight includes accessible counts and percentages", () => {
+  const markup = travelModeMarkup(trips);
+  assert.match(markup, /Flight: 3 trips, 75%/);
+  assert.match(markup, /Bus: 1 trip, 25%/);
+  assert.match(markup, /width: 75%/);
 });
