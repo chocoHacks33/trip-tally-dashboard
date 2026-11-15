@@ -83,6 +83,19 @@ function formatTripDate(dateString) {
   }).format(parseDate(dateString));
 }
 
+function filterTrips(items, query) {
+  const normalizedQuery = query.trim().toLocaleLowerCase("en-SG");
+
+  if (!normalizedQuery) {
+    return items;
+  }
+
+  return items.filter((trip) =>
+    [trip.destination, trip.country, trip.status, trip.travelMode]
+      .some((value) => value.toLocaleLowerCase("en-SG").includes(normalizedQuery)),
+  );
+}
+
 function tripCardMarkup(trip) {
   const start = parseDate(trip.startDate);
   const month = new Intl.DateTimeFormat("en-SG", { month: "short", timeZone: "UTC" }).format(start);
@@ -122,16 +135,21 @@ function renderDashboard(items = trips) {
   document.querySelector("#next-stop").textContent = orderedTrips[0]?.destination ?? "No trips";
   document.querySelector("#trip-summary").textContent = `${summary.tripCount} upcoming ${summary.tripCount === 1 ? "trip" : "trips"}`;
   document.querySelector("#trip-list").innerHTML = orderedTrips.map(tripCardMarkup).join("");
+  document.querySelector("#trip-empty").hidden = orderedTrips.length > 0;
 }
 
 if (typeof document !== "undefined") {
   renderDashboard();
+  document.querySelector("#trip-search").addEventListener("input", (event) => {
+    renderDashboard(filterTrips(trips, event.currentTarget.value));
+  });
 }
 
 if (typeof module !== "undefined") {
   module.exports = {
     formatCurrency,
     formatTripDate,
+    filterTrips,
     getTripDuration,
     summarizeTrips,
     tripCardMarkup,

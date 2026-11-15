@@ -224,6 +224,41 @@ h1 {
   font-size: 0.86rem;
 }
 
+.search-control {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 34rem;
+  margin-bottom: 1.25rem;
+  color: var(--navy);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.search-control input {
+  width: 100%;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 0.8rem;
+  color: var(--ink);
+  background: var(--panel);
+  font: inherit;
+  font-weight: 500;
+}
+
+.search-control input:focus-visible {
+  outline: 3px solid rgba(77, 130, 170, 0.35);
+  outline-offset: 2px;
+}
+
+.empty-state {
+  margin: 0;
+  padding: 2rem;
+  border: 1px dashed var(--line);
+  border-radius: 1rem;
+  color: var(--muted);
+  text-align: center;
+}
+
 .trip-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
