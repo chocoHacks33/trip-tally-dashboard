@@ -42,4 +42,6 @@ test("trip card exposes destination, status, and duration", () => {
   assert.match(markup, /George Town/);
   assert.match(markup, /Booked/);
   assert.match(markup, /3 nights/);
+  assert.match(markup, /<small>Budget<\/small><strong>\$620<\/strong>|<small>Budget<\/small><strong>SGD\s620<\/strong>/);
+  assert.match(markup, /<small>Booked<\/small><strong>\$410<\/strong>|<small>Booked<\/small><strong>SGD\s410<\/strong>/);
 });

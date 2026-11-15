@@ -104,8 +104,8 @@ function tripCardMarkup(trip) {
         </div>
         <span class="status">${trip.status}</span>
         <div class="trip-costs">
-          <span>Budget ${formatCurrency(trip.budget)}</span>
-          <span>Booked ${formatCurrency(trip.booked)}</span>
+          <span><small>Budget</small><strong>${formatCurrency(trip.budget)}</strong></span>
+          <span><small>Booked</small><strong>${formatCurrency(trip.booked)}</strong></span>
         </div>
       </div>
     </article>`;
