@@ -224,6 +224,33 @@ h1 {
   font-size: 0.86rem;
 }
 
+.itinerary-actions {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.print-button {
+  padding: 0.7rem 0.9rem;
+  border: 0;
+  border-radius: 0.75rem;
+  color: white;
+  background: var(--navy);
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.print-button:hover {
+  background: #1f4a68;
+}
+
+.print-button:focus-visible {
+  outline: 3px solid rgba(77, 130, 170, 0.4);
+  outline-offset: 2px;
+}
+
 .trip-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -353,10 +380,104 @@ footer {
     margin-top: 0.7rem;
   }
 
+  .itinerary-actions {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .trip-card {
     grid-template-columns: 4.5rem minmax(0, 1fr);
     gap: 0.9rem;
     padding: 1rem;
+  }
+}
+
+@media print {
+  @page {
+    margin: 12mm;
+  }
+
+  body {
+    min-width: 0;
+    color: #111;
+    background: white;
+    font-size: 10pt;
+  }
+
+  .site-header,
+  .hero-stamp,
+  .print-button,
+  footer {
+    display: none;
+  }
+
+  .dashboard {
+    width: 100%;
+  }
+
+  .hero {
+    display: block;
+    padding: 0 0 8mm;
+  }
+
+  h1 {
+    max-width: none;
+    margin-bottom: 3mm;
+    color: #111;
+    font-size: 28pt;
+  }
+
+  .hero-copy {
+    max-width: none;
+    color: #333;
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3mm;
+  }
+
+  .summary-card {
+    min-height: 0;
+    padding: 4mm;
+    border-color: #bbb;
+    box-shadow: none;
+  }
+
+  .summary-card strong {
+    color: #111;
+    font-size: 20pt;
+  }
+
+  .itinerary-section {
+    padding: 10mm 0 0;
+  }
+
+  .section-heading {
+    margin-bottom: 5mm;
+  }
+
+  .section-heading h2 {
+    color: #111;
+    font-size: 20pt;
+  }
+
+  .trip-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4mm;
+  }
+
+  .trip-card {
+    break-inside: avoid;
+    padding: 4mm;
+    border-color: #bbb;
+    box-shadow: none;
+  }
+
+  .date-block {
+    color: white;
+    background: #222;
+    print-color-adjust: exact;
   }
 }
 

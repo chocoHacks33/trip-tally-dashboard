@@ -83,6 +83,10 @@ function formatTripDate(dateString) {
   }).format(parseDate(dateString));
 }
 
+function printItinerary(printPage) {
+  printPage();
+}
+
 function tripCardMarkup(trip) {
   const start = parseDate(trip.startDate);
   const month = new Intl.DateTimeFormat("en-SG", { month: "short", timeZone: "UTC" }).format(start);
@@ -126,6 +130,9 @@ function renderDashboard(items = trips) {
 
 if (typeof document !== "undefined") {
   renderDashboard();
+  document.querySelector("#print-itinerary").addEventListener("click", () => {
+    printItinerary(() => window.print());
+  });
 }
 
 if (typeof module !== "undefined") {
@@ -133,6 +140,7 @@ if (typeof module !== "undefined") {
     formatCurrency,
     formatTripDate,
     getTripDuration,
+    printItinerary,
     summarizeTrips,
     tripCardMarkup,
     trips,
