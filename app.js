@@ -83,6 +83,17 @@ function formatTripDate(dateString) {
   }).format(parseDate(dateString));
 }
 
+function sortTrips(items, sortBy = "departure-asc") {
+  const comparisons = {
+    "departure-asc": (a, b) => a.startDate.localeCompare(b.startDate),
+    "destination-asc": (a, b) => a.destination.localeCompare(b.destination, "en-SG"),
+    "budget-desc": (a, b) => b.budget - a.budget,
+    "booked-desc": (a, b) => b.booked - a.booked,
+  };
+
+  return [...items].sort(comparisons[sortBy] ?? comparisons["departure-asc"]);
+}
+
 function tripCardMarkup(trip) {
   const start = parseDate(trip.startDate);
   const month = new Intl.DateTimeFormat("en-SG", { month: "short", timeZone: "UTC" }).format(start);
@@ -111,21 +122,25 @@ function tripCardMarkup(trip) {
     </article>`;
 }
 
-function renderDashboard(items = trips) {
+function renderDashboard(items = trips, sortBy = "departure-asc") {
   const summary = summarizeTrips(items);
-  const orderedTrips = [...items].sort((a, b) => a.startDate.localeCompare(b.startDate));
+  const orderedTrips = sortTrips(items, sortBy);
+  const nextTrip = sortTrips(items, "departure-asc")[0];
 
   document.querySelector("#trip-count").textContent = summary.tripCount;
   document.querySelector("#night-count").textContent = summary.nights;
   document.querySelector("#budget-total").textContent = formatCurrency(summary.budget);
   document.querySelector("#booked-total").textContent = formatCurrency(summary.booked);
-  document.querySelector("#next-stop").textContent = orderedTrips[0]?.destination ?? "No trips";
+  document.querySelector("#next-stop").textContent = nextTrip?.destination ?? "No trips";
   document.querySelector("#trip-summary").textContent = `${summary.tripCount} upcoming ${summary.tripCount === 1 ? "trip" : "trips"}`;
   document.querySelector("#trip-list").innerHTML = orderedTrips.map(tripCardMarkup).join("");
 }
 
 if (typeof document !== "undefined") {
   renderDashboard();
+  document.querySelector("#trip-sort").addEventListener("change", (event) => {
+    renderDashboard(trips, event.currentTarget.value);
+  });
 }
 
 if (typeof module !== "undefined") {
@@ -133,6 +148,7 @@ if (typeof module !== "undefined") {
     formatCurrency,
     formatTripDate,
     getTripDuration,
+    sortTrips,
     summarizeTrips,
     tripCardMarkup,
     trips,
