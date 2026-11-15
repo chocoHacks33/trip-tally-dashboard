@@ -60,7 +60,12 @@
           </div>
           <p id="trip-summary" aria-live="polite"></p>
         </div>
+        <label class="search-control" for="trip-search">
+          <span>Search trips</span>
+          <input id="trip-search" type="search" placeholder="Destination, country, status, or transport" autocomplete="off">
+        </label>
         <div id="trip-list" class="trip-grid"></div>
+        <p id="trip-empty" class="empty-state" hidden>No trips match that search.</p>
       </section>
     </main>
 

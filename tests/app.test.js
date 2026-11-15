@@ -2,12 +2,24 @@ const test = require("node:test");
 const assert = require("node:assert/strict");
 
 const {
+  filterTrips,
   formatCurrency,
   getTripDuration,
   summarizeTrips,
   tripCardMarkup,
   trips,
 } = require("../app.js");
+
+test("trip search matches destinations, countries, statuses, and transport", () => {
+  assert.deepEqual(filterTrips(trips, "japan").map((trip) => trip.id), ["kyoto-spring"]);
+  assert.deepEqual(filterTrips(trips, "flight").map((trip) => trip.id), [
+    "bali-reset",
+    "kyoto-spring",
+    "sydney-winter",
+  ]);
+  assert.deepEqual(filterTrips(trips, "  BOOKED ").map((trip) => trip.id), ["penang-weekend"]);
+  assert.equal(filterTrips(trips, "train").length, 0);
+});
 
 test("starter dashboard includes four upcoming trips", () => {
   assert.equal(trips.length, 4);
