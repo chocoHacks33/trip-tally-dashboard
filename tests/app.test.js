@@ -4,10 +4,19 @@ const assert = require("node:assert/strict");
 const {
   formatCurrency,
   getTripDuration,
+  printItinerary,
   summarizeTrips,
   tripCardMarkup,
   trips,
 } = require("../app.js");
+
+test("print action delegates to the browser print function", () => {
+  let printCalls = 0;
+  printItinerary(() => {
+    printCalls += 1;
+  });
+  assert.equal(printCalls, 1);
+});
 
 test("starter dashboard includes four upcoming trips", () => {
   assert.equal(trips.length, 4);
