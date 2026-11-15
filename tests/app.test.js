@@ -4,10 +4,29 @@ const assert = require("node:assert/strict");
 const {
   formatCurrency,
   getTripDuration,
+  sortTrips,
   summarizeTrips,
   tripCardMarkup,
   trips,
 } = require("../app.js");
+
+test("trip sorting supports useful planning orders without mutating source data", () => {
+  const originalOrder = trips.map((trip) => trip.id);
+
+  assert.deepEqual(sortTrips(trips, "destination-asc").map((trip) => trip.destination), [
+    "George Town",
+    "Kyoto",
+    "Sydney",
+    "Ubud",
+  ]);
+  assert.deepEqual(sortTrips(trips, "budget-desc").map((trip) => trip.id), [
+    "sydney-winter",
+    "kyoto-spring",
+    "bali-reset",
+    "penang-weekend",
+  ]);
+  assert.deepEqual(trips.map((trip) => trip.id), originalOrder);
+});
 
 test("starter dashboard includes four upcoming trips", () => {
   assert.equal(trips.length, 4);

@@ -60,6 +60,15 @@
           </div>
           <p id="trip-summary" aria-live="polite"></p>
         </div>
+        <label class="sort-control" for="trip-sort">
+          <span>Sort trips</span>
+          <select id="trip-sort">
+            <option value="departure-asc">Soonest departure</option>
+            <option value="destination-asc">Destination A–Z</option>
+            <option value="budget-desc">Highest budget</option>
+            <option value="booked-desc">Most already booked</option>
+          </select>
+        </label>
         <div id="trip-list" class="trip-grid"></div>
       </section>
     </main>
