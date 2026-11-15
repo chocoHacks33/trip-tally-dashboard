@@ -4,10 +4,28 @@ const assert = require("node:assert/strict");
 const {
   formatCurrency,
   getTripDuration,
+  statusBreakdownMarkup,
   summarizeTrips,
+  summarizeStatuses,
   tripCardMarkup,
   trips,
 } = require("../app.js");
+
+test("status summary reports counts and percentages", () => {
+  assert.deepEqual(summarizeStatuses([trips[0], trips[0], trips[1]]), [
+    { status: "Booked", count: 2, percentage: 67 },
+    { status: "Planning", count: 1, percentage: 33 },
+  ]);
+  assert.deepEqual(summarizeStatuses([]), []);
+});
+
+test("status breakdown exposes accessible progress values", () => {
+  const markup = statusBreakdownMarkup([trips[0], trips[0], trips[1]]);
+  assert.match(markup, /role="progressbar"/);
+  assert.match(markup, /aria-valuemax="3"/);
+  assert.match(markup, /aria-valuenow="2"/);
+  assert.match(markup, /width: 67%/);
+});
 
 test("starter dashboard includes four upcoming trips", () => {
   assert.equal(trips.length, 4);

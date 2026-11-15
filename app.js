@@ -83,6 +83,36 @@ function formatTripDate(dateString) {
   }).format(parseDate(dateString));
 }
 
+function summarizeStatuses(items) {
+  const counts = items.reduce((summary, trip) => {
+    summary.set(trip.status, (summary.get(trip.status) ?? 0) + 1);
+    return summary;
+  }, new Map());
+
+  return [...counts.entries()]
+    .map(([status, count]) => ({
+      status,
+      count,
+      percentage: items.length ? Math.round((count / items.length) * 100) : 0,
+    }))
+    .sort((a, b) => b.count - a.count || a.status.localeCompare(b.status, "en-SG"));
+}
+
+function statusBreakdownMarkup(items) {
+  return summarizeStatuses(items)
+    .map(({ status, count, percentage }) => `
+      <div class="status-row" role="listitem">
+        <div class="status-label">
+          <strong>${status}</strong>
+          <span>${count} ${count === 1 ? "trip" : "trips"}</span>
+        </div>
+        <div class="status-track" role="progressbar" aria-label="${status}: ${count} trips" aria-valuemin="0" aria-valuemax="${items.length}" aria-valuenow="${count}">
+          <span style="width: ${percentage}%"></span>
+        </div>
+      </div>`)
+    .join("");
+}
+
 function tripCardMarkup(trip) {
   const start = parseDate(trip.startDate);
   const month = new Intl.DateTimeFormat("en-SG", { month: "short", timeZone: "UTC" }).format(start);
@@ -121,6 +151,7 @@ function renderDashboard(items = trips) {
   document.querySelector("#booked-total").textContent = formatCurrency(summary.booked);
   document.querySelector("#next-stop").textContent = orderedTrips[0]?.destination ?? "No trips";
   document.querySelector("#trip-summary").textContent = `${summary.tripCount} upcoming ${summary.tripCount === 1 ? "trip" : "trips"}`;
+  document.querySelector("#status-breakdown").innerHTML = statusBreakdownMarkup(items);
   document.querySelector("#trip-list").innerHTML = orderedTrips.map(tripCardMarkup).join("");
 }
 
@@ -133,6 +164,8 @@ if (typeof module !== "undefined") {
     formatCurrency,
     formatTripDate,
     getTripDuration,
+    statusBreakdownMarkup,
+    summarizeStatuses,
     summarizeTrips,
     tripCardMarkup,
     trips,
